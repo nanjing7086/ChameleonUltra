@@ -1,0 +1,23 @@
+name: Auto Compile Project  # 工作流名称
+on: [push]  # 触发条件：每次代码提交时触发
+jobs:
+  compile:  # 任务名称
+    runs-on: ubuntu-latest  # 使用Ubuntu系统环境
+    steps:  # 执行步骤
+      - name: Checkout code
+        uses: actions/checkout@v4  # 拉取代码到虚拟环境
+      - name: Install dependencies
+        run: |  # 安装编译依赖项
+          sudo apt-get update
+          sudo apt-get install -y g++ cmake
+      - name: Build project
+        run: |  # 编译命令（根据项目类型调整）
+          mkdir build
+          cd build
+          cmake ..
+          make -j4
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4  # 上传编译产物
+        with:
+          name: binary-files
+          path: build/*  # 指定要上传的目录或文件
